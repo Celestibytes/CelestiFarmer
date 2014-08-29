@@ -17,7 +17,7 @@ public class RenderHelper {
 	public static void init() {
 		if(areaVertexArray == null) {
 			areaVertexArray = BufferUtils.createFloatBuffer(3*6*32*32);
-			float ps = 0.1f;
+			float ps = 40f;
 			for(int y=0;y<32;y++) {
 				for(int x=0;x<32;x++) {
 					areaVertexArray.put(x*ps).put(y*ps).put(0f);

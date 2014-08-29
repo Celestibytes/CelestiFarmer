@@ -12,7 +12,11 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.util.glu.GLU;
 
+import celestibytes.celestifarmer.Out;
+import celestibytes.celestifarmer.Version;
 import celestibytes.celestifarmer.graphics.RenderHelper;
+import celestibytes.celestifarmer.graphics.gui.Gui;
+import celestibytes.celestifarmer.graphics.gui.GuiRenderer;
 import celestibytes.celestifarmer.input.util.MouseHelper;
 import celestibytes.celestifarmer.world.Area;
 import static org.lwjgl.opengl.GL11.*;
@@ -20,12 +24,12 @@ import static org.lwjgl.opengl.GL11.*;
 public class Game {
 	
 	private static float delta;
+	private static long lastCycle = System.currentTimeMillis();
 	private static int stopScheluded = 100; // 100 is the ok value, any other value will quit the game and the value will be passed for return value
 	
 	private long fpsCheckLast = System.currentTimeMillis();
 	private int frameCount = 0;
 	
-	private int[][] testWorld = new int[16][16];
 	private Random rand = new Random(System.currentTimeMillis());
 	
 	// world render offset
@@ -33,6 +37,8 @@ public class Game {
 	public static float worldOffsY = 0;
 	
 	private Area testArea = null;
+	
+	private	Gui testGui = new Gui(10, 10, 200, 200);
 	
 	public void start() {
 		preload();
@@ -43,10 +49,24 @@ public class Game {
 				GameInitHelper.onResize();
 			}
 			
+			calcDelta();
+			
 			MouseHelper.update();
 			
-			worldOffsX += MouseHelper.dragMiddle.mouseDeltaX/500f;
-			worldOffsY += MouseHelper.dragMiddle.mouseDeltaY/500f;
+			worldOffsX += MouseHelper.dragMiddle.mouseDeltaX;
+			worldOffsY += MouseHelper.dragMiddle.mouseDeltaY;
+			
+			
+			if(testGui.isBeingDraggedByMouse()) {
+				if(!MouseHelper.dragLeft.isButtonDown()) {
+					testGui.setBeingDragged(false);
+				}
+			} else {
+				if(MouseHelper.dragLeft.isButtonDown() && testGui.pointInsideDragBar(Mouse.getX(), GameInitHelper.getWindowHeight()-Mouse.getY())) {
+					testGui.setBeingDragged(true);
+				}
+			}
+			testGui.update();
 			
 			gameLoop();
 			
@@ -75,8 +95,9 @@ public class Game {
 	
 	private void init() {
 		try {
-			GameInitHelper.initGL("CelestiFarmer", 960, 720);
+			GameInitHelper.initGL(Version.getTitle(), 960, 720);
 			RenderHelper.init();
+			
 			glClearColor(0f, .5f, .5f, 1f);
 			glPointSize(10f);
 			
@@ -89,17 +110,34 @@ public class Game {
 		}
 	}
 	
+	private void calcDelta() {
+		delta = (System.currentTimeMillis()-lastCycle)/1000f;
+		lastCycle = System.currentTimeMillis();
+	}
+	
+	public static float getDelta() {
+		return delta;
+	}
+	
 	private void gameLoop() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glLoadIdentity();
-		
-		glTranslatef(0f+worldOffsX,.5f+worldOffsY,-worldOffsY-.5f);
-		glRotatef(-45, 1f,0f,0f);
-		glRotatef(45, 0f,0f,1f);
-		
+//		GameInitHelper.worldProjection();
+		glTranslatef(worldOffsX,-worldOffsY,0);
+//		glRotatef(-45, 1f,0f,0f);
+//		glRotatef(45, 0f,0f,1f);
 		//renderWorld();
 		RenderHelper.renderArea(testArea);
 		
+		
+		
+		glLoadIdentity();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		GuiRenderer.render(testGui);
+		glDisable(GL_BLEND);
+		
+//		GameInitHelper.guiProjection();
 	}
 	
 	private void stop() {

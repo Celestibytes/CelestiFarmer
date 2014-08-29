@@ -23,7 +23,7 @@ public class Area {
 		for(int i=0;i<32*32*6;i++) {
 			switch(color) {
 			case 0:
-				groundColors.put(Colors.GREEN);
+				groundColors.put(Colors.DARK_GREEN);
 				break;
 			case 1:
 				groundColors.put(Colors.YELLOW);
