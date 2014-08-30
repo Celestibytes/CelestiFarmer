@@ -1,5 +1,6 @@
 package celestibytes.jgutil;
 
+import java.io.FileInputStream;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
@@ -11,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.util.glu.GLU;
+import org.newdawn.slick.opengl.Texture;
 
 import celestibytes.celestifarmer.Out;
 import celestibytes.celestifarmer.Version;
@@ -18,6 +20,7 @@ import celestibytes.celestifarmer.graphics.RenderHelper;
 import celestibytes.celestifarmer.graphics.gui.Gui;
 import celestibytes.celestifarmer.graphics.gui.GuiManager;
 import celestibytes.celestifarmer.graphics.gui.GuiRenderer;
+import celestibytes.celestifarmer.graphics.util.TextureLoader;
 import celestibytes.celestifarmer.input.util.MouseHelper;
 import celestibytes.celestifarmer.util.Colour;
 import celestibytes.celestifarmer.world.Area;
@@ -92,6 +95,10 @@ public class Game {
 				fpsCheckLast = System.currentTimeMillis();
 			}
 		}
+		if(testTexture != -1) {
+			GL11.glDeleteTextures(testTexture);
+		}
+		GameInitHelper.destGL();
 	}
 	
 	private boolean keepRunning() {
@@ -99,6 +106,9 @@ public class Game {
 	}
 	
 	private void preload() {}
+	
+	private int testTexture = -1;
+	private Texture sliTex = null;
 	
 	private void init() {
 		try {
@@ -111,10 +121,20 @@ public class Game {
 			
 			glClearColor(0f, .5f, .5f, 1f);
 			glPointSize(10f);
+			glEnable(GL_TEXTURE_2D);
+			
+			try {
+				sliTex = org.newdawn.slick.opengl.TextureLoader.getTexture("PNG", new FileInputStream("res/textures/bedrock.png"));
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+//			testTexture = TextureLoader.loadTexture("res/textures/bedrock.png");
+			System.out.println("TexId: " + testTexture);
 			
 			testArea = new Area();
 			
-		} catch(LWJGLException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 			System.err.println("Initialization failed!!!");
 			System.exit(-1);
@@ -138,14 +158,40 @@ public class Game {
 //		glRotatef(-45, 1f,0f,0f);
 //		glRotatef(45, 0f,0f,1f);
 		//renderWorld();
-		RenderHelper.renderArea(testArea);
+//		RenderHelper.renderArea(testArea);
 		
 		
 		
 		glLoadIdentity();
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		guim.renderGuis();
+		
+		if(sliTex != null) {
+//			glColor3f(1f,1f,1f);
+//			glEnable(GL_TEXTURE_2D);
+//			glBindTexture(GL_TEXTURE_2D, testTexture);
+			sliTex.bind();
+			glBegin(GL_QUADS);
+			
+			glTexCoord2f(0f, 0f);
+			glVertex3f(0f,0f, 1.99f);
+			
+			glTexCoord2f(1f, 0f);
+			glVertex3f(300f,0f, 1.99f);
+			
+			glTexCoord2f(1f, 1f);
+			glVertex3f(300f,300f, 1.99f);
+			
+			glTexCoord2f(0f, 1f);
+			glVertex3f(0f,300f, 1.99f);
+			
+			glEnd();
+			glBindTexture(GL_TEXTURE_2D, 0);
+//			glDisable(GL_TEXTURE_2D);
+		}
+		
+		
+//		guim.renderGuis();
 //		GuiRenderer.render(testGui);
 		glDisable(GL_BLEND);
 		

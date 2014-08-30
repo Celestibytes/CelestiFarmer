@@ -5,3 +5,5 @@ lib/
 .project
 *.class
 *.jar
+res/textures/bedrock.png
+(temporary)
