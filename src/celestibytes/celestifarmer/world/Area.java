@@ -29,15 +29,15 @@ public class Area {
 				groundColors.put(Colors.YELLOW);
 				break;
 			case 2:
-				groundColors.put(Colors.BROWN);
+				groundColors.put(Colors.BLUE);
 				break;
 			default:
-				groundColors.put(Colors.RED);
+				groundColors.put(Colors.BROWN);
 				break;
 			}
 			counter++;
 			if(counter > 5) {
-				color++;
+//				color++;
 				if(color > 2) {
 					color = 0;
 				}

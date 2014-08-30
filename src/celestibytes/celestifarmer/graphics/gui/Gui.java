@@ -13,6 +13,11 @@ public class Gui implements IGui {
 	private boolean maximized = false;
 	private boolean resizable = false;
 	
+	public Gui(int x, int y, int width, int height, boolean resizable, Colour bgColor) {
+		this(x, y, width, height, resizable);
+		this.bgColor = bgColor;
+	}
+	
 	public Gui(int x, int y, int width, int height, boolean resizable) {
 		this(x, y, width, height);
 		this.resizable = resizable;
@@ -27,11 +32,15 @@ public class Gui implements IGui {
 		return this;
 	}
 	
-	public void update() {
-		if(this.draggedByMouse) {
+	public void dragUpdate() {
+		if(this.draggedByMouse || true) {
 			this.x += MouseHelper.dragLeft.mouseDeltaX;
 			this.y -= MouseHelper.dragLeft.mouseDeltaY;
 		}
+	}
+	
+	public void render() {
+		
 	}
 	
 	public void addX(int v) {
@@ -77,6 +86,10 @@ public class Gui implements IGui {
 	
 	public boolean pointInsideDragBar(int x, int y) {
 		return this.x <= x && x < this.x + this.width && this.y <= y && y < this.y + dragBarHeight;
+	}
+	
+	public boolean pointInsideGui(int x, int y) {
+		return this.x <= x && x < this.x + this.width && this.y <= y && y < this.y + this.height;
 	}
 	
 	public void setMinimized(boolean v) {

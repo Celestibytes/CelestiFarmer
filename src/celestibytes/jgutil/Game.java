@@ -16,8 +16,10 @@ import celestibytes.celestifarmer.Out;
 import celestibytes.celestifarmer.Version;
 import celestibytes.celestifarmer.graphics.RenderHelper;
 import celestibytes.celestifarmer.graphics.gui.Gui;
+import celestibytes.celestifarmer.graphics.gui.GuiManager;
 import celestibytes.celestifarmer.graphics.gui.GuiRenderer;
 import celestibytes.celestifarmer.input.util.MouseHelper;
+import celestibytes.celestifarmer.util.Colour;
 import celestibytes.celestifarmer.world.Area;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -38,7 +40,9 @@ public class Game {
 	
 	private Area testArea = null;
 	
-	private	Gui testGui = new Gui(10, 10, 200, 200);
+	private GuiManager guim = null;
+	
+	//private Gui testGui = new Gui(10, 10, 200, 200);
 	
 	public void start() {
 		preload();
@@ -52,21 +56,24 @@ public class Game {
 			calcDelta();
 			
 			MouseHelper.update();
+			guim.mouseUpdate();
 			
 			worldOffsX += MouseHelper.dragMiddle.mouseDeltaX;
 			worldOffsY += MouseHelper.dragMiddle.mouseDeltaY;
 			
 			
-			if(testGui.isBeingDraggedByMouse()) {
-				if(!MouseHelper.dragLeft.isButtonDown()) {
-					testGui.setBeingDragged(false);
-				}
-			} else {
-				if(MouseHelper.dragLeft.isButtonDown() && testGui.pointInsideDragBar(Mouse.getX(), GameInitHelper.getWindowHeight()-Mouse.getY())) {
-					testGui.setBeingDragged(true);
-				}
-			}
-			testGui.update();
+//			if(testGui.isBeingDraggedByMouse()) {
+//				if(!MouseHelper.dragLeft.isButtonDown()) {
+//					testGui.setBeingDragged(false);
+//				}
+//			} else {
+//				if(MouseHelper.dragLeft.isButtonDown() && testGui.pointInsideDragBar(Mouse.getX(), GameInitHelper.getWindowHeight()-Mouse.getY())) {
+//					testGui.setBeingDragged(true);
+//				}
+//			}
+//			testGui.update();
+			
+			
 			
 			gameLoop();
 			
@@ -80,7 +87,7 @@ public class Game {
 			
 			frameCount++;
 			if((System.currentTimeMillis() - fpsCheckLast) > 1000) {
-				System.out.println("FPS: " + frameCount++);
+//				System.out.println("FPS: " + frameCount++);
 				frameCount = 0;
 				fpsCheckLast = System.currentTimeMillis();
 			}
@@ -97,6 +104,10 @@ public class Game {
 		try {
 			GameInitHelper.initGL(Version.getTitle(), 960, 720);
 			RenderHelper.init();
+			guim = new GuiManager();
+			guim.openGui(new Gui(50, 50, 200, 200, false, new Colour(1f, 0f, 0f, .7f)));
+			guim.openGui(new Gui(50, 50, 100, 200, false, new Colour(0f, 1f, 0f, .7f)));
+			guim.openGui(new Gui(50, 50, 200, 100, false, new Colour(0f, 0f, 1f, .7f)));
 			
 			glClearColor(0f, .5f, .5f, 1f);
 			glPointSize(10f);
@@ -134,7 +145,8 @@ public class Game {
 		glLoadIdentity();
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		GuiRenderer.render(testGui);
+		guim.renderGuis();
+//		GuiRenderer.render(testGui);
 		glDisable(GL_BLEND);
 		
 //		GameInitHelper.guiProjection();
