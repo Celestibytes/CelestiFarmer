@@ -1,17 +1,24 @@
 package celestibytes.celestifarmer.graphics.gui;
 
+import java.nio.FloatBuffer;
+
+import org.lwjgl.opengl.GL11;
+
 import celestibytes.celestifarmer.input.util.MouseHelper;
 import celestibytes.celestifarmer.util.Colour;
+import celestibytes.jgutil.Game;
 
 public class Gui implements IGui {
 	
-	private static final int dragBarHeight = 20;
 	private int x, y, width, height;
 	private Colour bgColor = new Colour(.3f, .3f, .3f, .7f);
 	private boolean draggedByMouse = false;
 	private boolean minimized = false;
 	private boolean maximized = false;
 	private boolean resizable = false;
+	
+	protected FloatBuffer decor;
+	
 	
 	public Gui(int x, int y, int width, int height, boolean resizable, Colour bgColor) {
 		this(x, y, width, height, resizable);
@@ -39,8 +46,36 @@ public class Gui implements IGui {
 		}
 	}
 	
+	private void renderGuiDecor() {
+		int useTex = GuiManager.TEXTURE_GUI_DECOR;
+		if(useTex != -1) {
+			GL11.glColor3f(1f,1f,1f);
+//			GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE_MINUS_DST_COLOR);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, useTex);
+			
+			GL11.glBegin(GL11.GL_QUADS);
+			
+			GL11.glTexCoord2f(0.75f, 0f);
+			GL11.glVertex3f(this.x+this.width,this.y, 1.99f);
+			
+			GL11.glTexCoord2f(1f, 0f);
+			GL11.glVertex3f(this.x+this.width-GuiManager.dragBarHeight,this.y, 1.99f);
+			
+			GL11.glTexCoord2f(1f, 1f);
+			GL11.glVertex3f(this.x+this.width-GuiManager.dragBarHeight,this.y+GuiManager.dragBarHeight, 1.99f);
+			
+			GL11.glTexCoord2f(0.75f, 1f);
+			GL11.glVertex3f(this.x+this.width,this.y+GuiManager.dragBarHeight, 1.99f);
+			
+			GL11.glEnd();
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+		}
+	}
+	
 	public void render() {
-		
+		renderGuiDecor();
 	}
 	
 	public void addX(int v) {
@@ -85,7 +120,7 @@ public class Gui implements IGui {
 	}
 	
 	public boolean pointInsideDragBar(int x, int y) {
-		return this.x <= x && x < this.x + this.width && this.y <= y && y < this.y + dragBarHeight;
+		return this.x <= x && x < this.x + this.width && this.y <= y && y < this.y + GuiManager.dragBarHeight;
 	}
 	
 	public boolean pointInsideGui(int x, int y) {

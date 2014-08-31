@@ -90,13 +90,18 @@ public class Game {
 			
 			frameCount++;
 			if((System.currentTimeMillis() - fpsCheckLast) > 1000) {
-//				System.out.println("FPS: " + frameCount++);
+				System.out.println("FPS: " + frameCount++);
 				frameCount = 0;
 				fpsCheckLast = System.currentTimeMillis();
 			}
 		}
-		if(testTexture != -1) {
-			GL11.glDeleteTextures(testTexture);
+		
+		if(GuiManager.TEXTURE_GUI_CLOSE != -1) {
+			GL11.glDeleteTextures(GuiManager.TEXTURE_GUI_CLOSE);
+		}
+		
+		if(GuiManager.TEXTURE_GUI_MINIMIZE != -1) {
+			GL11.glDeleteTextures(GuiManager.TEXTURE_GUI_MINIMIZE);
 		}
 		GameInitHelper.destGL();
 	}
@@ -107,30 +112,19 @@ public class Game {
 	
 	private void preload() {}
 	
-	private int testTexture = -1;
-	private Texture sliTex = null;
-	
 	private void init() {
 		try {
 			GameInitHelper.initGL(Version.getTitle(), 960, 720);
 			RenderHelper.init();
+			GuiManager.init();
 			guim = new GuiManager();
-			guim.openGui(new Gui(50, 50, 200, 200, false, new Colour(1f, 0f, 0f, .7f)));
-			guim.openGui(new Gui(50, 50, 100, 200, false, new Colour(0f, 1f, 0f, .7f)));
-			guim.openGui(new Gui(50, 50, 200, 100, false, new Colour(0f, 0f, 1f, .7f)));
+			guim.openGui(new Gui(50, 50, 200, 200, false, new Colour(1f, 0f, 0f, 1f)));
+			guim.openGui(new Gui(50, 50, 100, 200, false, new Colour(0f, 1f, 0f, 1f)));
+			guim.openGui(new Gui(50, 50, 200, 100, false, new Colour(0f, 0f, 1f, 1f)));
 			
 			glClearColor(0f, .5f, .5f, 1f);
 			glPointSize(10f);
 			glEnable(GL_TEXTURE_2D);
-			
-			try {
-				sliTex = org.newdawn.slick.opengl.TextureLoader.getTexture("PNG", new FileInputStream("res/textures/bedrock.png"));
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			
-//			testTexture = TextureLoader.loadTexture("res/textures/bedrock.png");
-			System.out.println("TexId: " + testTexture);
 			
 			testArea = new Area();
 			
@@ -157,39 +151,16 @@ public class Game {
 		glTranslatef(worldOffsX,-worldOffsY,0);
 //		glRotatef(-45, 1f,0f,0f);
 //		glRotatef(45, 0f,0f,1f);
-		//renderWorld();
-//		RenderHelper.renderArea(testArea);
-		
-		
+//		renderWorld();
+		RenderHelper.renderArea(testArea);
 		
 		glLoadIdentity();
 		glEnable(GL_BLEND);
+		glColor3f(1f,1f,1f);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		if(sliTex != null) {
-//			glColor3f(1f,1f,1f);
-//			glEnable(GL_TEXTURE_2D);
-//			glBindTexture(GL_TEXTURE_2D, testTexture);
-			sliTex.bind();
-			glBegin(GL_QUADS);
-			
-			glTexCoord2f(0f, 0f);
-			glVertex3f(0f,0f, 1.99f);
-			
-			glTexCoord2f(1f, 0f);
-			glVertex3f(300f,0f, 1.99f);
-			
-			glTexCoord2f(1f, 1f);
-			glVertex3f(300f,300f, 1.99f);
-			
-			glTexCoord2f(0f, 1f);
-			glVertex3f(0f,300f, 1.99f);
-			
-			glEnd();
-			glBindTexture(GL_TEXTURE_2D, 0);
-//			glDisable(GL_TEXTURE_2D);
-		}
-		
+//		guim.renderDecor();
+		guim.interlTest();
 		
 //		guim.renderGuis();
 //		GuiRenderer.render(testGui);
