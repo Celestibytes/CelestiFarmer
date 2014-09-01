@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) 2014 Celestibytes
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/**
+ * CelestiFarmer
+ *
+ * Master build file
+ *
+ * @author PizzAna
+ */
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven/"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            name = "cbs"
+            url = "https://raw.githubusercontent.com/Celestibytes/files/master/"
+        }
+    }
+    dependencies {
+        classpath 'io.github.celestibytes:CelestiGradle:2.4.0'
+    }
+}
+
+apply plugin: 'maven'
+
+import static celestibytes.gradle.CelestiGradlePlugin.*
+
+version = versionNumber('0.1.0')
+basePackage('celestibytes.celestifarmer')
+artifactsList(['javadoc', 'src'])
+
+group 'io.github.celestibytes'
+archivesBaseName = project.getName()
+
+apply plugin: 'celestibytes'
+
+// This is not needed soon(tm)
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'net.java.jinput:jinput:2.0.6'
+	compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.1'
+	compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+	compile 'com.github.jponge:lzma-java:1.3'
+	// TODO slick-util
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'res'
+        }
+    }
+    test {
+        java {
+            srcDir 'test/src'
+        }
+        resources {
+            srcDir 'test/res'
+        }
+    }
+}
