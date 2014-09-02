@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
 import celestibytes.celestifarmer.graphics.util.TextureLoader;
@@ -23,87 +24,45 @@ public class GuiManager {
 	
 	public static final int dragBarHeight = 25;
 	
-	public static FloatBuffer guiDecorVerts = null;
-	public static FloatBuffer guiDecorTexUVs = null;
-	
 	public static FloatBuffer guiDecorDta = null;
 	
-	public static final float[] guiDecorationVerts = new float[] {
-		// Close button
-		0.0f, 0.0f, 0.0f,
-		0.0f, 30.0f, 0.0f,
-		30.0f, 30.0f, 0.0f,
-		
-		30.0f, 30.0f, 0.0f,
-		30.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		
-		// Minimize
-		30.0f, 0.0f, 0.0f,
-		30.0f, 30.0f, 0.0f,
-		60.0f, 30.0f, 0.0f,
-		
-		60.0f, 30.0f, 0.0f,
-		60.0f, 0.0f, 0.0f,
-		30.0f, 0.0f, 0.0f
-	};
-	
-	public static final float[] guiDecorationUVs = new float[] {
-		// Close button
-		0.75f, 1f,
-		0.75f, 0f,
-		1f, 0f,
-		
-		1f, 0f,
-		1f, 1f,
-		0.75f, 1f,
-		
-		// Minimize
-		0.5f, 1f,
-		0.5f, 0f,
-		.75f, 0f,
-		
-		.75f, 0f,
-		.75f, 1f,
-		0.5f, 1f
-	};
-	
 	public static final float[] guiDecorInterl = new float[] {
+		// U   V   R   G   B   X     Y     Z
 		// Close button
-		0.75f, 1f, 0.0f, 0.0f, 0.0f, 
-		0.75f, 0f, 0.0f, dragBarHeight, 0.0f, 
-		1f, 0f, dragBarHeight, dragBarHeight, 0.0f, 
+		0.75f, 1f, 1f, 1f, 1f, 0.0f, 0.0f, 0.0f, 
+		0.75f, 0f, 1f, 1f, 1f, 0.0f, dragBarHeight, 0.0f, 
+		1f, 0f, 1f, 1f, 1f, dragBarHeight, dragBarHeight, 0.0f, 
 		
-		1f, 0f, dragBarHeight, dragBarHeight, 0.0f,
-		1f, 1f, dragBarHeight, 0.0f, 0.0f, 
-		0.75f, 1f, 0.0f, 0.0f, 0.0f,
+		1f, 0f, 1f, 1f, 1f, dragBarHeight, dragBarHeight, 0.0f,
+		1f, 1f, 1f, 1f, 1f, dragBarHeight, 0.0f, 0.0f, 
+		0.75f, 1f, 1f, 1f, 1f, 0.0f, 0.0f, 0.0f,
 		
 		// Minimize
-		0.5f, 1f, dragBarHeight, 0.0f, 0.0f,
-		0.5f, 0f, dragBarHeight, dragBarHeight, 0.0f,
-		.75f, 0f, 2*dragBarHeight, dragBarHeight, 0.0f,
+		0.5f, 1f, 1f, 1f, 1f, dragBarHeight, 0.0f, 0.0f,
+		0.5f, 0f, 1f, 1f, 1f, dragBarHeight, dragBarHeight, 0.0f,
+		.75f, 0f, 1f, 1f, 1f, 2*dragBarHeight, dragBarHeight, 0.0f,
 		
-		.75f, 0f, 2*dragBarHeight, dragBarHeight, 0.0f,
-		.75f, 1f, 2*dragBarHeight, 0.0f, 0.0f,
-		0.5f, 1f, dragBarHeight, 0.0f, 0.0f,
+		.75f, 0f, 1f, 1f, 1f, 2*dragBarHeight, dragBarHeight, 0.0f,
+		.75f, 1f, 1f, 1f, 1f, 2*dragBarHeight, 0.0f, 0.0f,
+		0.5f, 1f, 1f, 1f, 1f, dragBarHeight, 0.0f, 0.0f,
 		
 		// Maximize
-		0.25f, 1f, 2*dragBarHeight, 0.0f, 0.0f,
-		0.25f, 0f, 2*dragBarHeight, dragBarHeight, 0.0f,
-		.5f, 0f, 3*dragBarHeight, dragBarHeight, 0.0f,
+		0.25f, 1f, 1f, 1f, 1f, 2*dragBarHeight, 0.0f, 0.0f,
+		0.25f, 0f, 1f, 1f, 1f, 2*dragBarHeight, dragBarHeight, 0.0f,
+		.5f, 0f, 1f, 1f, 1f, 3*dragBarHeight, dragBarHeight, 0.0f,
 		
-		.5f, 0f, 3*dragBarHeight, dragBarHeight, 0.0f,
-		.5f, 1f, 3*dragBarHeight, 0.0f, 0.0f,
-		0.25f, 1f, 2*dragBarHeight, 0.0f, 0.0f,
+		.5f, 0f, 1f, 1f, 1f, 3*dragBarHeight, dragBarHeight, 0.0f,
+		.5f, 1f, 1f, 1f, 1f, 3*dragBarHeight, 0.0f, 0.0f,
+		0.25f, 1f, 1f, 1f, 1f, 2*dragBarHeight, 0.0f, 0.0f,
 		
 		// Default size
-		0f, 1f, 3*dragBarHeight, 0.0f, 0.0f,
-		0f, 0f, 3*dragBarHeight, dragBarHeight, 0.0f,
-		.25f, 0f, 4*dragBarHeight, dragBarHeight, 0.0f,
+		0f, 1f, 1f, 1f, 1f, 3*dragBarHeight, 0.0f, 0.0f,
+		0f, 0f, 1f, 1f, 1f, 3*dragBarHeight, dragBarHeight, 0.0f,
+		.25f, 0f, 1f, 1f, 1f, 4*dragBarHeight, dragBarHeight, 0.0f,
 		
-		.25f, 0f, 4*dragBarHeight, dragBarHeight, 0.0f,
-		.25f, 1f, 4*dragBarHeight, 0.0f, 0.0f,
-		0f, 1f, 3*dragBarHeight, 0.0f, 0.0f
+		.25f, 0f, 1f, 1f, 1f, 4*dragBarHeight, dragBarHeight, 0.0f,
+		.25f, 1f, 1f, 1f, 1f, 4*dragBarHeight, 0.0f, 0.0f,
+		0f, 1f, 1f, 1f, 1f, 3*dragBarHeight, 0.0f, 0.0f
 	};
 	
 	/**Note: active guis are normally displayed guis or minimized.*/
@@ -114,16 +73,7 @@ public class GuiManager {
 		TEXTURE_GUI_CLOSE = TextureLoader.loadTexture("res/textures/gui/icon_gui_close.png");
 		TEXTURE_GUI_MINIMIZE = TextureLoader.loadTexture("res/textures/gui/icon_gui_minimize.png");
 		TEXTURE_GUI_DECOR = TextureLoader.loadTexture("res/textures/gui/gui_decoration.png");
-		
-		guiDecorVerts = BufferUtils.createFloatBuffer(guiDecorationVerts.length);
-		guiDecorTexUVs = BufferUtils.createFloatBuffer(guiDecorationUVs.length);
-		
-		guiDecorVerts.put(guiDecorationVerts);
-		guiDecorTexUVs.put(guiDecorationUVs);
-		
-		guiDecorVerts.flip();
-		guiDecorTexUVs.flip();
-		
+
 		guiDecorDta = BufferUtils.createFloatBuffer(guiDecorInterl.length);
 		guiDecorDta.put(guiDecorInterl);
 		guiDecorDta.flip();
@@ -133,8 +83,17 @@ public class GuiManager {
 		activeGuis = new ArrayList<Gui>(0);
 	}
 	
-	public void decorateGui(Gui gui) {
+	public static float[] getGuiDecor(float x, float y, float width) {
+		float[] ret = new float[6*8];
+		System.arraycopy(guiDecorInterl, 0, ret, 0, ret.length);
+		ret[5] = x+width-dragBarHeight; ret[6] = y;
+		ret[13] = x+width-dragBarHeight; ret[14] = y+dragBarHeight;
+		ret[21] = x+width; ret[22] = y+dragBarHeight;
 		
+		ret[29] = x+width; ret[30] = y+dragBarHeight;
+		ret[37] = x+width; ret[38] = y;
+		ret[45] = x+width-dragBarHeight; ret[46] = y;
+		return ret;
 	}
 	
 	public void interlTest() {
@@ -147,39 +106,28 @@ public class GuiManager {
 		
 		glDrawArrays(GL_TRIANGLES, 0, 24);
 		
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 	}
 	
-	public void renderDecor() {
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, TEXTURE_GUI_DECOR);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		
-		glVertexPointer(3, 3*4, guiDecorVerts);
-		glTexCoordPointer(2, 2*4, guiDecorTexUVs);
-		
-		glDrawArrays(GL_TRIANGLES, 0, 12);
-		
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-	}
-	
+	private float trsX, trsY; // Current translation
 	public void renderGuis() {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		Gui iter = null;
+		
 		for(int i=activeGuis.size()-1;i>-1;i--) {
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			GuiRenderer.render(activeGuis.get(i));
-//			glDisable(GL_BLEND);
-//			glEnable(GL_BLEND);
-			activeGuis.get(i).render();
-			glDisable(GL_BLEND);
+			iter = activeGuis.get(i);
+//			GuiRenderer.render(iter);
+			iter.renderInter();
+			
+			
+			trsX += iter.getX()-trsX; trsY += iter.getY()-trsY;
 		}
+		
+		glDisable(GL_BLEND);
 	}
 	
 	private boolean leftWasDown = false;
@@ -246,6 +194,9 @@ public class GuiManager {
 	/**0 = left, 1 = right, 2 = middle*/
 	private void mouseUp(int button) {
 		if(button == 0) {
+			if(draggedGuiId != -1) {
+				this.activeGuis.get(this.draggedGuiId).renderUpdate();
+			}
 			this.draggedGuiId = -1;
 		}
 	}
@@ -270,6 +221,7 @@ public class GuiManager {
 	}
 	
 	public void openGui(Gui gui) {
+		gui.setupRenderData();
 		this.draggedGuiId++;
 		this.activeGuis.add(0, gui);
 	}

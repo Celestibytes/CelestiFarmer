@@ -85,15 +85,16 @@ public class Game {
 				System.out.println(GLU.gluErrorString(errCode));
 			}
 			
-			Display.update();
-			Display.sync(60);
+			
 			
 			frameCount++;
 			if((System.currentTimeMillis() - fpsCheckLast) > 1000) {
-				System.out.println("FPS: " + frameCount++);
+				System.out.println("FPS: " + frameCount + ", Logic time: " + (System.currentTimeMillis()-lastCycle) + "ms");
 				frameCount = 0;
 				fpsCheckLast = System.currentTimeMillis();
 			}
+			Display.update();
+			Display.sync(60);
 		}
 		
 		if(GuiManager.TEXTURE_GUI_CLOSE != -1) {
@@ -155,16 +156,12 @@ public class Game {
 		RenderHelper.renderArea(testArea);
 		
 		glLoadIdentity();
-		glEnable(GL_BLEND);
-		glColor3f(1f,1f,1f);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 //		guim.renderDecor();
-		guim.interlTest();
-		
-//		guim.renderGuis();
+//		guim.interlTest();
+		glColor3f(1f,1f,1f);
+		guim.renderGuis();
 //		GuiRenderer.render(testGui);
-		glDisable(GL_BLEND);
 		
 //		GameInitHelper.guiProjection();
 	}

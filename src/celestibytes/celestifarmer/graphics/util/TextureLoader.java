@@ -51,6 +51,8 @@ public class TextureLoader {
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 			
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+			
 			return texId;
 		} catch(Exception e) {
 			e.printStackTrace();
