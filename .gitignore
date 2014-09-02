@@ -7,3 +7,5 @@ lib/
 *.jar
 res/textures/bedrock.png
 (temporary)
+/gradle
+/.gradle
