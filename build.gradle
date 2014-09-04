@@ -30,29 +30,22 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
-        maven {
-            name = "cbs"
-            url = "https://raw.githubusercontent.com/Celestibytes/files/master/"
-        }
     }
     dependencies {
-        classpath 'io.github.celestibytes:CelestiGradle:2.4.0'
+        classpath 'io.github.celestibytes:CelestiGradle:3.0-SNAPSHOT'
     }
 }
-
-apply plugin: 'maven'
 
 import static celestibytes.gradle.CelestiGradlePlugin.*
 
 version = versionNumber('0.1.0')
 basePackage('celestibytes.celestifarmer')
 artifactsList(['javadoc', 'src'])
-libs(['jinput', 'lwjgl', 'lzma'])
+
+apply plugin: 'celestibytes'
 
 group 'io.github.celestibytes'
 archivesBaseName = project.getName()
-
-apply plugin: 'celestibytes'
 
 sourceSets {
     main {
