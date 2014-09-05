@@ -11,9 +11,16 @@ public class Area {
 	// 32*32 plot - size area
 	private ByteBuffer groundColors;
 	private FieldPlot[] plots;
+	// Area coordinates
+	private int ax, ay;
 	
 	public Area() {
 		createGround();
+		plots = new FieldPlot[areaPlots];
+	}
+	
+	public void setPlot() {
+		
 	}
 	
 	public void createGround() {

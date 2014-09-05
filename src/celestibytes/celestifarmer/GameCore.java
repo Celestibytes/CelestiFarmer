@@ -9,8 +9,8 @@ import okkapel.ogljguisystem.Gui;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
 
-import celestibytes.celestifarmer.graphics.RenderHelper;
 import celestibytes.celestifarmer.graphics.util.Textures;
+import celestibytes.celestifarmer.rendering.RenderHelper;
 import celestibytes.celestifarmer.world.Area;
 import celestibytes.ctiengine.Game;
 import celestibytes.ctiengine.GameInitHelper;
@@ -24,6 +24,8 @@ public class GameCore extends Game {
 	private float worldOffsY;
 	
 	private Area testArea = null;
+	
+//	private World
 	
 	@Override
 	protected void preload() {
