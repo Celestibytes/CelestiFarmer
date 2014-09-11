@@ -1,6 +1,6 @@
 package celestibytes.celestifarmer.graphics.util;
 
-import celestibytes.ctiengine.util.Colour;
+import okkapel.kkplglutil.util.Colour;
 
 public class ProgressBar {
 	private float x, y, width, height, progress;
