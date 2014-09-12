@@ -5,8 +5,10 @@ import static org.lwjgl.opengl.GL11.*;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
+import okkapel.kkplglutil.rendering.GLHandler;
 import okkapel.kkplglutil.rendering.GLRenderMethod;
 import okkapel.kkplglutil.rendering.GLRenderObj;
+import okkapel.kkplglutil.rendering.GLRenderObjPointer;
 import okkapel.kkplglutil.rendering.RenderBufferGenerator;
 import okkapel.kkplglutil.util.Colour;
 import okkapel.ogljguisystem.Gui;
@@ -33,6 +35,8 @@ public class GameCore extends Game {
 	private FloatBuffer rbg_test;
 	private GLRenderObj vbo_test;
 	
+	private GLRenderObjPointer testPtr;
+	
 //	private World
 	
 	@Override
@@ -52,7 +56,12 @@ public class GameCore extends Game {
 		
 		rbg_test = rbg.createBuffer();
 		
-		vbo_test = new GLRenderObj(GLRenderMethod.VERTEX_BUFFER_OBJECT, rbg_test, GL15.GL_DYNAMIC_DRAW);
+		// Do in CTIEngine
+		GLHandler.init();
+		
+		testPtr = GLHandler.createVBO(rbg_test, GL15.GL_DYNAMIC_DRAW, null, 3);
+		
+//		vbo_test = new GLRenderObj(GLRenderMethod.VERTEX_BUFFER_OBJECT, rbg_test, GL15.GL_DYNAMIC_DRAW);
 		
 		try {
 			guim.openGui(new Gui(50, 50, 200, 200, false, new okkapel.ogljguisystem.util.Colour(1f, 0f, 0f, 1f)));
@@ -91,26 +100,9 @@ public class GameCore extends Game {
 		guim.renderGuis();
 //		GuiRenderer.render(testGui);
 		
-		if(vbo_test.getVBOId() != -1) {
-			glLoadIdentity();
-			
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_COLOR_ARRAY);
-			
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo_test.getVBOId());
-			
-			glVertexPointer(3, GL_FLOAT, 8*4, 5*4);
-			glColorPointer(3, GL_FLOAT, 8*4, 2*4);
-	//		glInterleavedArrays(GL_T2F_C3F_V3F, RenderBufferGenerator.DEFAULT_GL_STRIDE, rbg_test);
-			
-			glDrawArrays(GL_TRIANGLES, 0, 3);
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-			
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_COLOR_ARRAY);
-		} else {
-			System.out.println("No vbo");
-		}
+		glLoadIdentity();
+		
+		GLHandler.renderRendPtr(testPtr);
 		
 //		GameInitHelper.guiProjection();
 	}
@@ -119,6 +111,7 @@ public class GameCore extends Game {
 	protected void deInit() {
 		Textures.deleteTextures();
 		vbo_test.deleteVbo();
+		GLHandler.deinit();
 	}
 
 }
