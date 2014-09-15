@@ -1,7 +1,9 @@
 package celestibytes.celestifarmer;
 
-import celestibytes.ctiengine.Game;
-import celestibytes.ctiengine.logging.ILogger;
+import java.nio.ByteBuffer;
+
+import celestibytes.ctie.core.Game;
+import okkapel.kkplglutil.rendering.RenderBufferGenerator;
 
 public class CelestiFarmer {
 	
@@ -10,9 +12,7 @@ public class CelestiFarmer {
 	public static void main(String[] args) {
 		System.out.println("Starting up the game...");
 		theGame = new GameCore();
-		ILogger engineLogger = new Out();
-		engineLogger.setLoggerPrefix("CTIEngine");
-		theGame.start(engineLogger, 60, 960, 720, Version.getTitle());
+		theGame.start();
 	}
 	
 }

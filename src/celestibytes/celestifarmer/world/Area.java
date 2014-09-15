@@ -2,17 +2,22 @@ package celestibytes.celestifarmer.world;
 
 import java.nio.ByteBuffer;
 
+import okkapel.kkplglutil.rendering.GLRenderObjPointer;
+
 import org.lwjgl.BufferUtils;
 
 import celestibytes.celestifarmer.graphics.util.Colors;
+import celestibytes.cetiengine.util.IRenderable;
 
-public class Area {
+public class Area implements IRenderable {
 	public static final int areaPlots = 32*32;
 	// 32*32 plot - size area
 	private ByteBuffer groundColors;
 	private FieldPlot[] plots;
 	// Area coordinates
 	private int ax, ay;
+	
+	private GLRenderObjPointer fieldRPtr;
 	
 	public Area() {
 		createGround();
@@ -57,6 +62,11 @@ public class Area {
 	
 	public ByteBuffer getBGData() {
 		return this.groundColors;
+	}
+
+	@Override
+	public GLRenderObjPointer getRenderPtr() {
+		return null;//return this.rptr;
 	}
 	
 }

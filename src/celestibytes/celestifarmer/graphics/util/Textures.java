@@ -2,7 +2,8 @@ package celestibytes.celestifarmer.graphics.util;
 
 import org.lwjgl.opengl.GL11;
 
-import celestibytes.ctiengine.util.TextureLoader;
+import celestibytes.ctie.util.TextureLoader;
+
 
 public class Textures {
 	

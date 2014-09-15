@@ -16,14 +16,19 @@ public class Version {
 	public static final int version_majorVersionNumber = 0;
 	public static final int version_minorVersionNumber = 0;
 	
+	private static int motlId = -1;
+	
 	public static String getTitle() {
 		return title + " " + version_majorVersionNumber + "." + version_minorVersionNumber + "." + (DEBUG_ENABLED ? "[DEV BUILD]" : version_buildNumber) + ": " + getMOTL();
 	}
 	
 	/**MOTL - Message Of The Launch.*/
 	public static String getMOTL() {
-		Random rand = new Random(System.currentTimeMillis());
-		return motls[rand.nextInt(motls.length)];
+		if(motlId == -1) {
+			Random rand = new Random(System.currentTimeMillis());
+			motlId = rand.nextInt(motls.length);
+		}
+		return motls[motlId];
 	}
 	
 	private static final String[] motls = new String[] {

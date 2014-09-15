@@ -2,6 +2,7 @@ package celestibytes.celestifarmer;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
@@ -20,28 +21,28 @@ import org.lwjgl.util.glu.GLU;
 import celestibytes.celestifarmer.graphics.util.Textures;
 import celestibytes.celestifarmer.rendering.RenderHelper;
 import celestibytes.celestifarmer.world.Area;
-import celestibytes.ctiengine.Game;
-import celestibytes.ctiengine.GameInitHelper;
-import celestibytes.ctiengine.input.MouseHelper;
+import celestibytes.ctie.core.Game;
 
 public class GameCore extends Game {
-	
+
 	// world render offset
 	private float worldOffsX;
 	private float worldOffsY;
 	
 	private Area testArea = null;
 	
-	private FloatBuffer rbg_test;
-	private GLRenderObj vbo_test;
+	private ByteBuffer rbg_test;
 	
 	private GLRenderObjPointer testPtr;
 	
-//	private World
+	public GameCore() {
+		super(Version.getTitle(), 60, 960, 720);
+	}
 	
 	@Override
-	protected void preload() {
+	protected void preLoad() {
 		Textures.loadTextures();
+		setGuiDecorTex(Textures.TEXTURE_GUI_DECOR);
 	}
 	
 	@Override
@@ -50,23 +51,21 @@ public class GameCore extends Game {
 		
 		RenderBufferGenerator rbg = RenderBufferGenerator.INSTANCE;
 		
-		rbg.addVertexWColorWUV(0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f);
-		rbg.addVertexWColorWUV(100f, 0f, 0f, 0f, 1f, 0f, 0f, 0f);
-		rbg.addVertexWColorWUV(100f, 100f, 0f, 0f, 0f, 1f, 0f, 0f);
+		rbg.addVertexWColorWUV(100f, 100f, 0f, 1f, 0f, 0f, .7f, 0f, 0f);
+		rbg.addVertexWColorWUV(200f, 100f, 0f, 0f, 1f, 0f, .7f, 0f, 0f);
+		rbg.addVertexWColorWUV(200f, 200f, 0f, 0f, 0f, 1f, .7f, 0f, 0f);
 		
 		rbg_test = rbg.createBuffer();
 		
 		// Do in CTIEngine
 		GLHandler.init();
 		
-		testPtr = GLHandler.createVBO(rbg_test, GL15.GL_DYNAMIC_DRAW, null, 3);
-		
-//		vbo_test = new GLRenderObj(GLRenderMethod.VERTEX_BUFFER_OBJECT, rbg_test, GL15.GL_DYNAMIC_DRAW);
+		testPtr = GLHandler.createROBJ(rbg_test, GL15.GL_DYNAMIC_DRAW, null, 3);
 		
 		try {
-			guim.openGui(new Gui(50, 50, 200, 200, false, new okkapel.ogljguisystem.util.Colour(1f, 0f, 0f, 1f)));
-			guim.openGui(new Gui(50, 50, 100, 200, false, new okkapel.ogljguisystem.util.Colour(0f, 1f, 0f, 1f)));
-			guim.openGui(new Gui(50, 50, 200, 100, false, new okkapel.ogljguisystem.util.Colour(0f, 0f, 1f, 1f)));
+			guiManager.openGui(new Gui(50, 50, 200, 200, false, new okkapel.ogljguisystem.util.Colour(1f, 0f, 0f, 1f)));
+			guiManager.openGui(new Gui(50, 50, 100, 200, false, new okkapel.ogljguisystem.util.Colour(0f, 1f, 0f, 1f)));
+			guiManager.openGui(new Gui(50, 50, 200, 100, false, new okkapel.ogljguisystem.util.Colour(0f, 0f, 1f, 1f)));
 			
 			glClearColor(0f, .5f, .5f, 1f);
 			glPointSize(10f);
@@ -97,12 +96,15 @@ public class GameCore extends Game {
 //		guim.renderDecor();
 //		guim.interlTest();
 		glColor3f(1f,1f,1f);
-		guim.renderGuis();
+		guiManager.renderGuis();
 //		GuiRenderer.render(testGui);
 		
 		glLoadIdentity();
 		
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		GLHandler.renderRendPtr(testPtr);
+		glDisable(GL_BLEND);
 		
 //		GameInitHelper.guiProjection();
 	}
@@ -110,7 +112,6 @@ public class GameCore extends Game {
 	@Override
 	protected void deInit() {
 		Textures.deleteTextures();
-		vbo_test.deleteVbo();
 		GLHandler.deinit();
 	}
 
